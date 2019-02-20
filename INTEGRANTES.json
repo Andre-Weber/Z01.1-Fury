@@ -15,9 +15,9 @@
     "user-github": {},
   },
   "aluno-4": {
-    "nome": {},
-    "email-insper": {},
-    "user-github": {}
+    "nome": {"Vitor Grando Eller"},
+    "email-insper": {"vitorge@al.insper.edu.br"},
+    "user-github": {"VFermat"}
   },
   "aluno-5": {
     "nome": {},
