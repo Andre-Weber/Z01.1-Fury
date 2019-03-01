@@ -5,14 +5,14 @@
     "gustavobb": {}
   },
   "aluno-2": {
-    "nome": {},
-    "email-insper": {},
-    "user-github": {}
+    "nome": Caio H. Fauza,
+    "email-insper": caiohf1@al.insper.edu.br,
+    "user-github": CaioFauza
   },
   "aluno-3": {
-    "nome": {},
-    "email-insper": {},
-    "user-github": {},
+    "nome": {Pedro Paulo Mendonça Telho},
+    "email-insper": {pedropmt@al.insper.edu.br},
+    "user-github": {pedromtelho},
   },
   "aluno-4": {
     "nome": {"Vitor Grando Eller"},
