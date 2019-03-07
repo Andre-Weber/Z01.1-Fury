@@ -25,7 +25,7 @@ begin
 		else
 		q3 <= a;
 		end if;
-	end process
+	end process;
 
-end architecture;
+end architecture
 
