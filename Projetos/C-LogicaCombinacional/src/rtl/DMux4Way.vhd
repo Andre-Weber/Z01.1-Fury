@@ -14,6 +14,7 @@ end entity;
 architecture rtl of DMux4Way is
 begin
 
+
 	process (a, sel)is
 	begin
 		if (sel = "00") then
@@ -26,5 +27,6 @@ begin
 		q3 <= a;
 		end if;
 	end process;
+
 
 end architecture;
