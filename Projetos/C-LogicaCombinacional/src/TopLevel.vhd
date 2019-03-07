@@ -20,7 +20,8 @@ use work.all;
 entity TopLevel is
 	port(
 		SW      : in  std_logic_vector(9 downto 0);
-		LEDR    : out std_logic_vector(9 downto 0)
+		LEDR    : out std_logic_vector(9 downto 0);
+		HEX0    : out std_logic_vector(6 downto 0)
 	);
 end entity;
 
@@ -38,6 +39,10 @@ architecture rtl of TopLevel is
 ---------------
 begin
  
-  LEDR(0) <= SW(0);
+  
+  if (SW(0)) then
+		HEX0 <= "0011001";
+  end if;
+	
 
 end rtl;
