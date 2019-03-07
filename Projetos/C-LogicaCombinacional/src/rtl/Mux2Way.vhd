@@ -13,7 +13,7 @@ architecture arch of Mux2Way is
 begin
 
 	with sel select
-		f <= a when '0';
+		f <= a when "0";
 			b when others;
 
 end architecture;
