@@ -12,7 +12,7 @@ end entity;
 architecture arch of Mux2Way is
 begin
 
-	process (sel)
+	process (sel, a, b)
 	begin
 		if sel = "0" then
 			q <= a;
