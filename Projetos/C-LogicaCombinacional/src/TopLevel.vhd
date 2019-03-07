@@ -42,10 +42,10 @@ architecture rtl of TopLevel is
 ---------------
 begin
  
-<<<<<<< HEAD
-  HEX0 <= "0100100";
-  
-=======
 
->>>>>>> upstream/master
+ 
+  
+
+
+
 end rtl;
