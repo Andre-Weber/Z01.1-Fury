@@ -14,7 +14,7 @@ begin
 
 	process (sel)
 	begin
-		if (sel = "0") then
+		if sel = "0" then
 			q <= a;
 		else
 			q <= b;
