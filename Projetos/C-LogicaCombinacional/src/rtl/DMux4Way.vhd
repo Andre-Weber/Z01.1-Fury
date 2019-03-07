@@ -16,11 +16,11 @@ begin
 
 	process (a, sel)is
 	begin
-		if (sel = '00') then
+		if (sel = "00") then
 		q0 <= a
-		elsif (sel = '10') then
+		elsif (sel = "10") then
 		q1 <= a
-		elsif (sel = '01') then
+		elsif (sel = "01") then
 		q2 <= a
 		else
 		q3 <= a
