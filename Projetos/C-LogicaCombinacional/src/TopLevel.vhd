@@ -43,9 +43,17 @@ architecture rtl of TopLevel is
 begin
  
 <<<<<<< HEAD
-  HEX0 <= "0100100";
-  
-=======
 
->>>>>>> upstream/master
+ 
+  
+
+
+=======
+  
+  if (SW(0)) then
+		HEX0 <= "0011001";
+  end if;
+	
+>>>>>>> ce935209ba20013a04ac19bf04613b0f39d51c7b
+
 end rtl;
