@@ -1,6 +1,8 @@
 ![](icon-elementos.png)
 
 > Desenvolvendo um computador operacional do ZERO!
+> SCRUM project C: André Weber
+> SCRUM project D: Vitor Eller
 
 ## Clonando
 
