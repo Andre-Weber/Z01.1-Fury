@@ -41,7 +41,7 @@ architecture rtl of BinaryDigit is
 
 begin
 
-  process_1: Mux2Way port map(feedback, input, load, out_mux);
+  process_1: Mux2Way port map(out_flip, input, load, out_mux);
   process_2: FlipFlopD port map(clock, out_mux, '0', '0', out_flip);
 
   output <= out_flip;
