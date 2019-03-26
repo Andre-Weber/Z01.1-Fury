@@ -65,18 +65,18 @@ signal vout1, vout2, vout3, vout4, vout5, vout6, vout7, vout8 : STD_LOGIC_VECTOR
 
 begin
 
-In: DMux8Way port map(load,address,v1,v2,v3,v4,v5,v6,v7,v8);
+dmux: DMux8Way port map(load,address(5 downto 3),v1,v2,v3,v4,v5,v6,v7,v8);
 
-R1: Ram8 port map(clock, input, load, address, vout1);
-R2: Ram8 port map(clock, input, load, address, vout2);
-R3: Ram8 port map(clock, input, load, address, vout3);
-R4: Ram8 port map(clock, input, load, address, vout4);
-R5: Ram8 port map(clock, input, load, address, vout5);
-R6: Ram8 port map(clock, input, load, address, vout6);
-R7: Ram8 port map(clock, input, load, address, vout7);
-R8: Ram8 port map(clock, input, load, address, vout8);
+R1: Ram8 port map(clock, input, v1, address(2 downto 0), vout1);
+R2: Ram8 port map(clock, input, v2, address(2 downto 0), vout2);
+R3: Ram8 port map(clock, input, v3, address(2 downto 0), vout3);
+R4: Ram8 port map(clock, input, v4, address(2 downto 0), vout4);
+R5: Ram8 port map(clock, input, v5, address(2 downto 0), vout5);
+R6: Ram8 port map(clock, input, v6, address(2 downto 0), vout6);
+R7: Ram8 port map(clock, input, v7, address(2 downto 0), vout7);
+R8: Ram8 port map(clock, input, v8, address(2 downto 0), vout8);
 
-Out: Mux8Way16 port map(vout1, vout2, vout3, vout4, vout5, vout6, vout7, vout8, address, output);
+mux: Mux8Way16 port map(vout1, vout2, vout3, vout4, vout5, vout6, vout7, vout8, address(5 downto 3), output);
 
 
 end architecture;
