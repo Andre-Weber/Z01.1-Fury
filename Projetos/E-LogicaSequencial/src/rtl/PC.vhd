@@ -20,7 +20,7 @@ entity PC is
         load      : in  STD_LOGIC;
         reset     : in  STD_LOGIC;
         input     : in  STD_LOGIC_VECTOR(15 downto 0);
-        output    : out STD_LOGIC_VECTOR(15 downto 0) := "0000000000000000"
+        output    : out STD_LOGIC_VECTOR(15 downto 0):="0000000000000000"
     );
 end entity;
 
@@ -36,27 +36,33 @@ architecture arch of PC is
   );
   end component;
 
-  SIGNAL readout, preout: std_logic_vector(15 downto 0) := "0000000000000000";
+  component Mux16 is
+    port ( 
+     a:   in  STD_LOGIC_VECTOR(15 downto 0);
+     b:   in  STD_LOGIC_VECTOR(15 downto 0);
+     sel: in  STD_LOGIC;
+    q:   out STD_LOGIC_VECTOR(15 downto 0)
+    );
+  end component;
+
+  component Register16 is
+  port(
+    clock:   in STD_LOGIC;
+    input:   in STD_LOGIC_VECTOR(15 downto 0);
+    load:    in STD_LOGIC;
+    output: out STD_LOGIC_VECTOR(15 downto 0)
+  );
+  end component;
+
+  
+  SIGNAL  preout, incout, muxincout, muxloadout, muxresetout, registerout: std_logic_vector(15 downto 0):="0000000000000000";
 
 begin
-  output <= readout;
-  Inc: Inc16 port map (readout, preout);
-  
-  process(clock)
-    begin
-    if (rising_edge(clock)) then
+  inc: Inc16 port map (preout, incout);
+  muxinc: Mux16 port map(preout, incout, increment, muxincout);
+  muxload: Mux16 port map(muxincout, input, load, muxloadout);
+  muxreset: Mux16 port map(muxloadout, "0000000000000000", reset, muxresetout);
+  registerf: Register16 port map (clock, muxresetout, '1', preout);
+  output <= preout;
     
-        if(reset = '1') then
-            readout <= "0000000000000000";
-        elsif (load = '1') then
-            readout <= input;
-        elsif (increment = '1') then
-            readout <= preout;
-        end if;
-
-      end if;
-
-
-  end process;
-
 end architecture;
