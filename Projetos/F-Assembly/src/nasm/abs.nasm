@@ -8,8 +8,11 @@
 ; ####################################################################
 leaw $R1, %A
 movw (%A), %D
+leaw $END, %A
+jg %D
+nop
+negw %D
 
-fazer if oq tem em R1 é menor q zero, se for, nega ele pra transformar em postivio
-
-leaw $R0, %A
-movw %D, (%A) 
+END:
+	leaw $R0, %A
+	movw %D, (%A) 
