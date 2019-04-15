@@ -11,7 +11,7 @@
 
 
 
-;Linha horizontal
+;Linha vertical
 leaw $3, %A
 movw %A, %D
 leaw $16385, %A
