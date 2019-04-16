@@ -8,9 +8,6 @@
 ;  - Bata uma foto!
 
 
-
-
-
 ;Linha vertical
 leaw $3, %A
 movw %A, %D
@@ -144,3 +141,4 @@ leaw $65535, %A
 movw %A, %D
 leaw $16585, %A
 movw %D, (%A)
+
