@@ -6,43 +6,43 @@
 ; Calcula o fatorial do número em (R0) e armazena o valor em (R1).
 
 leaw $0, %A 
-movw (%A), %S 
+movw (%A), %D 
 leaw $1, %A 
-movw %S, (%A)
-decw %S 
-decw %S 
+movw %D, (%A)
+decw %D 
+decw %D 
 leaw $2, %A 
-movw %S, (%A) 
-movw %S, %D 
+movw %D, (%A) 
+movw %D, %S 
 leaw $LOOP1, %A
-jg %D 
+jg %S 
 nop 
 LOOP1:
     leaw $1, %A 
-    movw (%A), %S 
+    movw (%A), %D 
     leaw %LOOP2, %A 
-    jg %D 
+    jg %S 
     nop
 LOOP2:
     leaw $1, %A 
-    addw %S, (%A), %S
+    addw %D, (%A), %D
     leaw $LOOP2, %A 
-    jg %D 
+    jg %S 
     nop
     leaw $1, %A 
-    movw %S, (%A) 
+    movw %D, (%A) 
     leaw $2, %A 
-    movw (%A), %D 
-    decw %D 
-    movw %D, (%A)
+    movw (%A), %S 
+    decw %S 
+    movw %S, (%A)
     leaw $LOOP1, %A 
-    jg %D 
+    jg %S 
     nop 
 leaw $LOOP3, %A
-jg %S 
+jg %D 
 nop 
-incw %S
+incw %D
 LOOP3:
     leaw $1, %A 
-    movw %S, (%A)
+    movw %D, (%A)
 
