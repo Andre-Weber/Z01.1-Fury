@@ -30,7 +30,9 @@ leaw $7, %A
 movw %A, %S
 LOOP:
     incw %S
-    movw (%S), %D
+    movw %S, %A 
+    movw (%A), %D
+    movw %A, %S
     leaw %LOOP, %A 
 jne %D
 nop
