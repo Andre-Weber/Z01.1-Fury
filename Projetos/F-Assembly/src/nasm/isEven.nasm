@@ -7,6 +7,7 @@
 ; par. Se for verdadeiro, salva 1
 ; em RAM[0] e 0 caso contrário.
 
+
 leaw $R5, %A
 movw (%A), %D
 leaw $1, %A
@@ -15,3 +16,4 @@ notw %D
 andw %A, %D, %D
 leaw $0, %A
 movw %D, (%A)
+
