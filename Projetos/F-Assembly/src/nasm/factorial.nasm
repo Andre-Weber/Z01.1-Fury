@@ -7,42 +7,48 @@
 
 leaw $0, %A 
 movw (%A), %D 
-leaw $1, %A 
-movw %D, (%A)
-decw %D 
-decw %D 
-leaw $2, %A 
-movw %D, (%A) 
-movw %D, %S 
-leaw $LOOP1, %A
-jg %S 
+decw %D
+leaw %LOOP0, %A 
+jge %D 
 nop 
-LOOP1:
-    leaw $1, %A 
-    movw (%A), %D 
-    leaw %LOOP2, %A 
-    jg %S 
-    nop
-LOOP2:
-    leaw $1, %A 
-    addw %D, (%A), %D
-    leaw $LOOP2, %A 
-    jg %S 
-    nop
-    leaw $1, %A 
-    movw %D, (%A) 
+leaw $1, %A
+movw %A, %S
+movw %S, (%A)
+leaw $LOOP_END, %A
+jmp
+nop
+
+LOOP0:
+    incw %D
+    leaw $0, %A 
+    movw %A, %S 
     leaw $2, %A 
-    movw (%A), %S 
-    decw %S 
-    movw %S, (%A)
-    leaw $LOOP1, %A 
-    jg %S 
+    movw %D, (%A)
+    decw %D 
+LOOP1:
+    movw %D, (%A)
+LOOP2:
+    leaw $0, %A 
+    addw %S, (%A), %S 
+    decw %D
+    leaw $LOOP2, %A 
+    jg %D 
     nop 
-leaw $LOOP3, %A
+
+leaw $2, %A 
+movw (%A), %D 
+decw %D 
+movw %D, (%A) 
+leaw $0, %A 
+movw %S, (%A)
+movw %A, %S 
+leaw $LOOP1, %A 
 jg %D 
 nop 
-incw %D
-LOOP3:
-    leaw $1, %A 
-    movw %D, (%A)
 
+leaw $0, %A 
+movw (%A), %S
+leaw $1, %A 
+movw %S, (%A)
+
+LOOP_END:
