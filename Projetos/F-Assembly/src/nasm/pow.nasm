@@ -6,3 +6,18 @@
 ; Eleva ao quadrado o valor da RAM[1] e armazena o resultado na RAM[0].
 ; Só funciona com números positivos
 
+
+leaw $R1, %A
+movw (%A), %D, %S
+LOOP:
+    leaw $R1, %A
+    addw %D, (%A), %D
+    decw %S
+    leaw $LOOP, %A
+    jne %S
+    nop
+leaw $R1, %A
+subw %D, (%A), %D
+leaw $R0, %A
+movw %D, (%A)
+

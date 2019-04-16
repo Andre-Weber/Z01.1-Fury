@@ -4,6 +4,7 @@
 ; Data: 28/3/2018
 ;
 ; Escreva no LCD o nome do grupo
+
 ;; F horizontal cima
 leaw $65535, %A
 movw %A, %D
@@ -431,3 +432,4 @@ leaw $896, %A
 movw %A, %D
 leaw $16767, %A
 movw %D, (%A)
+
