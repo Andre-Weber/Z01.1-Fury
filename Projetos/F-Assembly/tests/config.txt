@@ -18,10 +18,10 @@ mult 1 10000
 
 
 
+
 #isEven 2 1000
 #palindromo 2 1000
 #stringLength 2 2000
-
 
 
 
