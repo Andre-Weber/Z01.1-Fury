@@ -1,10 +1,8 @@
-![](icon-elementos.png)
+[![](icon-elementos.png)](https://github.com/Insper/Z01.1/wiki)
 
 > Desenvolvendo um computador operacional do ZERO!
 
-> SCRUM project C: André Weber
-
-> SCRUM project D: Vitor Eller
+Material disponível na [wiki](https://github.com/Insper/Z01.1/wiki)
 
 ## Clonando
 
