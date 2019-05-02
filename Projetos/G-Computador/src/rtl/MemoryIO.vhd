@@ -101,47 +101,46 @@ ARCHITECTURE logic OF MemoryIO IS
 
 begin
 
------------------------------------
+---------------------------------
 -- Dicas de uso, screen e RAM16k --
------------------------------------
+---------------------------------
 
---    DISPLAY: Screen  port map (
---          RST         => RST,
---          CLK_FAST    => CLK_FAST,
---          CLK_SLOW    => CLK_SLOW,
---          INPUT       =>
---          LOAD        =>
---          ADDRESS     =>
---          LCD_INIT_OK => LCD_INIT_OK,
---          LCD_CS_N 	  => LCD_CS_N ,
---          LCD_D       => LCD_D,
---          LCD_RD_N 	  => LCD_RD_N,
---          LCD_RESET_N => LCD_RESET_N,
---          LCD_RS 	    => LCD_RS,
---          LCD_WR_N 	  => LCD_WR_N
---    );
+screenportmap: Screen  port map (
+         RST         => RST,
+         CLK_FAST    => CLK_FAST,
+         CLK_SLOW    => CLK_SLOW,
+         INPUT       => INPUT(15 downto 0),
+         LOAD        => dmuxout2,
+         ADDRESS     => ADDRESS(13 downto 0),
+         LCD_INIT_OK => LCD_INIT_OK,
+         LCD_CS_N 	  => LCD_CS_N ,
+         LCD_D       => LCD_D,
+         LCD_RD_N 	  => LCD_RD_N,
+         LCD_RESET_N => LCD_RESET_N,
+         LCD_RS 	    => LCD_RS,
+         LCD_WR_N 	  => LCD_WR_N
+   );
 
 
---    RAM: RAM16K  PORT MAP(
---         clock		=>   CLK_FAST,
---         address  =>
---         data		  =>
---         wren		  =>
---         q		    =>
---    );
+   
+   RAM: RAM16K  PORT MAP(
+        clock		=>   CLK_FAST,
+        address  =>  ADDRESS(13 downto 0),
+        data		  => INPUT(15 downto 0),
+        wren		  => dmuxout0,
+        q		    => ramout
+   );
 
 seletordmux <= "00" when ADDRESS <= "011111111111111" else
-  "01" when ADDRESS >= "100000000000000" and ADDRESS <= "101001010111111" else
-  "10" when ADDRESS = "101001011000000" else
+  "10" when ADDRESS >= "100000000000000" and ADDRESS <= "101001010111111" else
+  "01" when ADDRESS = "101001011000000" else
   "11";
 
 seletormux <= "00" when ADDRESS = "101001011000001" else
   "01";
 
 dmux: Dmux4Way port map(LOAD, seletordmux, dmuxout0, dmuxout1, dmuxout2, dmuxnull);
-ram16: RAM16K port map(CLK_FAST, ADDRESS(13 downto 0), INPUT(15 downto 0), dmuxout0, ramout);
-register16portmap: Register16 port map(CLK_SLOW, INPUT(15 downto 0), dmuxout2, ledaux);
-screenportmap: Screen port map(CLK_FAST, CLK_SLOW, RST, INPUT(15 downto 0), dmuxout1, ADDRESS(13 downto 0), LCD_INIT_OK, LCD_CS_N, LCD_D, LCD_RD_N, LCD_RESET_N, LCD_RS, LCD_WR_N);
+register16portmap: Register16 port map(CLK_SLOW, INPUT(15 downto 0), dmuxout1, ledaux);
 mux: Mux4Way16 port map(seletormux, SWout, ramout, mux0null, mux1null, OUTPUT);
 
 LED(9 downto 0) <= LEDaux(9 downto 0);
