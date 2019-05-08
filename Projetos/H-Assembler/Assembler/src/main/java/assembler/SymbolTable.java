@@ -10,6 +10,7 @@ import java.util.HashMap;
 /**
  * Mantém uma tabela com a correspondência entre os rótulos simbólicos e endereços numéricos de memória.
  */
+//funcionando normalmente
 public class SymbolTable {
 
     private HashMap<String, Integer> symbolTable;
@@ -33,7 +34,6 @@ public class SymbolTable {
     public void addEntry(String symbol, int address) {
         symbolTable.put(symbol, address);
     }
-
     /**
      * Confere se o símbolo informado já foi inserido na tabela de símbolos.
      *
