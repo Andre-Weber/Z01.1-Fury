@@ -12,13 +12,114 @@ public class Code {
 
     /**
      * Retorna o código binário do(s) registrador(es) que vão receber o valor da instrução.
-     * @param  mnemnonic vetor de mnemônicos "instrução" a ser analisada.
+     *
+     * @param mnemnonic vetor de mnemônicos "instrução" a ser analisada.
      * @return Opcode (String de 4 bits) com código em linguagem de máquina para a instrução.
      */
     public static String dest(String[] mnemnonic) {
 
+        char d3= '0', d2= '0', d1= '0', d0 = '0';
+        StringBuilder sb = new StringBuilder();
+        if(mnemnonic.length == 2){
+            switch (mnemnonic[1]){
+                case "%A":
+                    d3 = '1';
+                    break;
+                case "%D":
+                    d1 = '1';
+                    break;
+                case "%S":
+                    d2 = '1';
+                    break;
+                case "(%A)":
+                    d0 = '1';
+                    break;
+            }
 
-    	return "";
+        }
+        if(mnemnonic.length == 3){
+            switch (mnemnonic[2]){
+                case "%A":
+                    d3 = '1';
+                    break;
+                case "%D":
+                    d1 = '1';
+                    break;
+                case "%S":
+                    d2 = '1';
+                    break;
+                case "(%A)":
+                    d0 = '1';
+                    break;
+            }
+        }
+        if(mnemnonic.length == 4){
+            switch (mnemnonic[2]){
+                case "%A":
+                    d3 = '1';
+                    break;
+                case "%D":
+                    d1 = '1';
+                    break;
+                case "%S":
+                    d2 = '1';
+                    break;
+                case "(%A)":
+                    d0 = '1';
+                    break;
+            }
+            switch (mnemnonic[3]){
+                case "%A":
+                    d3 = '1';
+                    break;
+                case "%D":
+                    d1 = '1';
+                    break;
+                case "%S":
+                    d2 = '1';
+                    break;
+                case "(%A)":
+                    d0 = '1';
+                    break;
+
+            }
+            if(mnemnonic[0] == "addw" || mnemnonic[0] == "subw" || mnemnonic[0] == "rsubw"){
+                switch (mnemnonic[3]){
+                    case "%A":
+                        d3 = '1';
+                        d2 = '0';
+                        d1 = '0';
+                        d0 = '0';
+                        break;
+                    case "%D":
+                        d1 = '1';
+                        d3 = '0';
+                        d2 = '0';
+                        d0 = '0';
+                        break;
+                    case "%S":
+                        d2 = '1';
+                        d3 = '0';
+                        d1 = '0';
+                        d0 = '0';
+                        break;
+                    case "(%A)":
+                        d0 = '1';
+                        d3 = '0';
+                        d2 = '0';
+                        d1 = '0';
+                        break;
+
+                }
+            }
+
+        }
+        sb.append(d3);
+        sb.append(d2);
+        sb.append(d1);
+        sb.append(d0);
+        return sb.toString();
+
     }
 
     /**
@@ -27,9 +128,281 @@ public class Code {
      * @return Opcode (String de 7 bits) com código em linguagem de máquina para a instrução.
      */
     public static String comp(String[] mnemnonic) {
+        char r2 = '0', r1 = '0', r0 = '0', c5 = '0', c4 = '0', c3= '0', c2= '0', c1= '0', c0= '0';
+        String r = "000";
+        StringBuilder sb = new StringBuilder();
+        if(mnemnonic.length == 2){
+            if(mnemnonic[0] == "jmp" || mnemnonic[0] == "je" || mnemnonic[0] == "jne" || mnemnonic[0] == "jg" || mnemnonic[0] == "jge" || mnemnonic[0] == "jl" || mnemnonic[0] == "jle"){
+                switch (mnemnonic[1]){
+                    case "%D": case "%S":
+                        c3 = '1';
+                        c2 = '1';
+                        break;
+                    case "%A": case "(%A)":
+                        c5 = '1';
+                        c4 = '1';
+                        break;
+                }
+            }
+            if(mnemnonic[0] == "incw"){
+            switch (mnemnonic[1]){
+                case "%A": case "(%A)":
+                    c5 = '1';
+                    c4 = '1';
+                    c2 = '1';
+                    c1 = '1';
+                    c0 = '1';
+                    break;
+                case "%D": case "%S":
+                    c4 = '1';
+                    c3 = '1';
+                    c2 = '1';
+                    c1 = '1';
+                    c0 = '1';
+                    break;
+            }
 
 
-    	return "";
+        }
+            if(mnemnonic[0] == "decw"){
+                switch (mnemnonic[1]){
+                    case "%D": case "%S":
+                        c3 = '1';
+                        c2 = '1';
+                        c1 = '1';
+                        break;
+                    case "%A": case "(%A)":
+                        c5 = '1';
+                        c4 = '1';
+                        c1 = '1';
+                        break;
+
+                }
+            }
+            if(mnemnonic[0] == "notw"){
+                switch (mnemnonic[1]){
+                    case "%D": case "%S":
+                        c3 = '1';
+                        c2 = '1';
+                        c0 = '1';
+                        break;
+                    case "%A": case "(%A)":
+                        c5 = '1';
+                        c4 = '1';
+                        c0 = '1';
+                        break;
+                }
+            }
+            if(mnemnonic[0] == "negw"){
+                switch (mnemnonic[1]){
+                    case "%D": case "%S":
+                        c3 = '1';
+                        c2 = '1';
+                        c1 = '1';
+                        c0 = '1';
+                        break;
+                    case "%A": case "(%A)":
+                        c5 = '1';
+                        c4 = '1';
+                        c1 = '1';
+                        c0 = '1';
+                        break;
+
+                }
+            }
+            r = mnemnonic[1];
+
+        }
+        if(mnemnonic.length == 3){
+            switch (mnemnonic[1]){
+                case "%A": case "(%A)":
+                    c5 = '1';
+                    c4 = '1';
+                    break;
+                case "%S": case "%D":
+                    c3 = '1';
+                    c2 = '1';
+                    break;
+            }
+            r = mnemnonic[1];
+
+        }
+        if(mnemnonic.length == 4){
+            if(mnemnonic[0] == "addw"){
+                c1 = '1';
+            }
+            if(mnemnonic[0] == "subw"){
+                if(mnemnonic[1] == "%S"){
+                    switch (mnemnonic[2]){
+                        case "$1":
+                            c3 = '1';
+                            c2 = '1';
+                            c1 = '1';
+                            break;
+                        default:
+                            c4 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                    }
+
+                }
+                if(mnemnonic[1] == "%D"){
+                    switch (mnemnonic[2]){
+                        case "%A": case "(%A)":
+                            c4 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                        case "%S":
+                            c2 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                        case "$1":
+                            c3 = '1';
+                            c2 = '1';
+                            c1 = '1';
+                            break;
+                    }
+                }
+                if(mnemnonic[1] == "(%A)"){
+                    switch (mnemnonic[2]){
+                        case "$1":
+                            c5 = '1';
+                            c4 = '1';
+                            c1 = '1';
+                            break;
+
+                        default:
+                            c2 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                    }
+                }
+                if(mnemnonic[1] == "%A"){
+                    switch (mnemnonic[2]){
+                        case "$1":
+                            c5 = '1';
+                            c4 = '1';
+                            c1 = '1';
+                            break;
+                        default:
+                            c2 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+
+                    }
+                }
+
+                }
+            if(mnemnonic[0] == "rsubw"){
+                if(mnemnonic[2] == "%D"){
+                    switch (mnemnonic[2]){
+                        case "%A":
+                            c5 = '0';
+                            c4 = '1';
+                            c3 = '0';
+                            c2 = '0';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                        case "%S":
+                            c5 = '0';
+                            c4 = '0';
+                            c3 = '0';
+                            c2 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                    }
+                }
+                if(mnemnonic[2] == "%S"){
+                    c4 = '1';
+                    c1 = '1';
+                    c0 = '1';
+                }
+                if(mnemnonic[2] == "%D"){
+                    switch (mnemnonic[2]){
+                        case "%A": case "(%A)":
+                            c4 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+
+                        case "%S":
+                            c2 = '1';
+                            c1 = '1';
+                            c0 = '1';
+                            break;
+                    }
+                }
+                if(mnemnonic[2] == "(%A)"){
+                    c2 = '1';
+                    c1 = '1';
+                    c0 = '1';
+                }
+                if(mnemnonic[2] == "%A"){
+                    c2 = '1';
+                    c1 = '1';
+                    c0 = '1';
+
+                }
+
+            }
+            if(mnemnonic[0] == "orw"){
+                c4 = '1';
+                c2 = '1';
+                c0 = '1';
+            }
+
+            r = mnemnonic[1] + mnemnonic[2];
+            }
+
+
+
+
+
+        if(r.contains("%D") || r.contains("%A") || (r.contains("%D") && r.contains("%A"))){
+            r2 = '0';
+            r1 = '0';
+            r0 = '0';
+        }
+        if(r.contains("%S") || (r.contains("%S") && r.contains("%A"))){
+            r2 = '0';
+            r1 = '0';
+            r0 = '1';
+        }
+        if(r.contains("(%A") || (r.contains("%D") && r.contains("%(A)"))){
+            r2 = '0';
+            r1 = '1';
+            r0 = '0';
+        }
+
+        if(r.contains("%S") && r.contains("(%A)")){
+            r2 = '0';
+            r1 = '1';
+            r0 = '1';
+        }
+
+        if(r.contains("%S") && r.contains("%D")){
+            r2 = '1';
+            r1 = '0';
+            r0 = '1';
+
+        }
+        sb.append(r2);
+        sb.append(r1);
+        sb.append(r0);
+        sb.append(c5);
+        sb.append(c4);
+        sb.append(c3);
+        sb.append(c2);
+        sb.append(c1);
+        sb.append(c0);
+        return sb.toString();
     }
 
     /**
@@ -38,9 +411,33 @@ public class Code {
      * @return Opcode (String de 3 bits) com código em linguagem de máquina para a instrução.
      */
     public static String jump(String[] mnemnonic) {
+        switch (mnemnonic[0]) {
+            case "jmp":
+                return "111";
+
+            case "jle":
+                return "110";
+
+            case "jne":
+                return "101";
+
+            case "jl":
+                return "100";
+
+            case "jge":
+                return "011";
+
+            case "je":
+                return "010";
+
+            case "jg":
+                return "001";
+            default:
+                return "000";
 
 
-        return "";
+        }
+
     }
 
     /**
