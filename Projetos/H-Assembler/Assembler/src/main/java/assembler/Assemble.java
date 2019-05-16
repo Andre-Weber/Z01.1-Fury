@@ -88,9 +88,7 @@ public class Assemble {
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
                     String[] command = parser.instruction(parser.command());
-                    if (command.length >1) {
-                        System.out.println(command[1]);
-                    }
+                    
                     instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
                     break;
                 case A_COMMAND:

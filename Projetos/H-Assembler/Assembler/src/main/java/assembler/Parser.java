@@ -123,8 +123,15 @@ public class Parser {
      */
     public String[] instruction(String command) {
         String[] aCommand = command.split(" |,");
-
-        return aCommand;
+        String newWord = "";
+        for (String string : aCommand) {
+            if (!(string.equals(" ") || string.equals(""))) {
+                newWord += string;
+                newWord += ",";
+            }
+        }
+        String[] mReturn = newWord.split(",");
+        return mReturn;
     }
 
     // fecha o arquivo de leitura
