@@ -100,7 +100,7 @@ public class Parser {
      * @return somente o símbolo ou o valor número da instrução.
      */
     public String symbol(String command) {
-    	return command.substring(command.indexOf("$"), command.indexOf(","));
+    	return command.substring(command.indexOf("$") + 1, command.indexOf(","));
     }
 
     /**
