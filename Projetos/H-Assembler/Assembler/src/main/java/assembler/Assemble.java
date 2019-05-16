@@ -9,6 +9,8 @@
 
 package assembler;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.io.*;
 import java.util.*;
 
@@ -22,11 +24,7 @@ public class Assemble {
     boolean debug;                         // flag que especifica se mensagens de debug são impressas
     private SymbolTable table;             // tabela de símbolos (variáveis e marcadores)
 
-    /**
-     * Retorna o código binário do mnemônico para realizar uma operação de cálculo.
-     * @param  mnemnonic vetor de mnemônicos "instrução" a ser analisada.
-     * @return Opcode (String de 7 bits) com código em linguagem de máquina para a instrução.
-     */
+
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
         inputFile  = inFile;
@@ -45,13 +43,34 @@ public class Assemble {
      * Dependencia : Parser, SymbolTable
      */
     public SymbolTable fillSymbolTable() throws FileNotFoundException, IOException {
+        int AddressL = 0;
         Parser parser = new Parser(inputFile);
         while (parser.advance()){
+            if (parser.commandType(parser.command()) == Parser.CommandType.L_COMMAND) {
+                if (!table.contains(parser.label(parser.command()))) {
+                    table.addEntry(parser.label(parser.command()), parser.lineNumber);
+                    AddressL ++;
+                }
+            }
 
         }
 
-        return table;
+
+
+
+
+        int AddressA = 0;
+        Parser parser2 = new Parser(inputFile);
+        while(parser2.advance()){
+            if (parser2.commandType(parser2.command()) == Parser.CommandType.A_COMMAND) {
+                if (!table.contains(parser2.symbol(parser2.command()))) {
+                    table.addEntry(parser2.symbol(parser2.command()), AddressA);
+                    AddressA ++;
+                }
+            }
+        } return table;
     }
+
 
     /**
      * Segundo passo para a geração do código de máquina
@@ -72,12 +91,25 @@ public class Assemble {
         while (parser.advance()){
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
+                    Code.comp(parser.instruction(parser.command()));
                     break;
                 case A_COMMAND:
+                    String mSymbol = parser.symbol(parser.command());
+                    System.out.println(mSymbol);
+                    String mInstruction;
+                    if (mSymbol.matches("[0-9]+")) {
+                        mInstruction = Code.toBinary(mSymbol);
+                    } else {
+                        Integer symbol = table.getAddress(mSymbol);
+                        mInstruction = Code.toBinary(symbol.toString());
+                    }
+                    System.out.println(mInstruction);
+                    instruction = "00" + mInstruction;
                     break;
                 default:
                     continue;
             }
+
             // Escreve no arquivo .hack a instrução
             if(outHACK!=null) {
                 outHACK.println(instruction);

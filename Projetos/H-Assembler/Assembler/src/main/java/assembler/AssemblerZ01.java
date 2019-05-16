@@ -73,8 +73,8 @@ class AssemblerZ01 {
         try {
             // Cria objeto assembler auxiliar
             Assemble assembler = new Assemble(  inputFile,
-                                                outputFileHack,
-                                                verbose);
+                    outputFileHack,
+                    verbose);
 
             // Cria tabela de símbolos
             assembler.fillSymbolTable();
@@ -88,10 +88,10 @@ class AssemblerZ01 {
             System.exit(0);
 
         } catch (FileNotFoundException ex){
-        	System.out.println("[ERRO] Arquivo \'" + inputFile + "\' encontrado" + "args: \n " +args[0] + args[1] + args[2]);
+            System.out.println("[ERRO] Arquivo \'" + inputFile + "\' encontrado" + "args: \n " +args[0] + args[1] + args[2]);
             System.exit(01);
         } catch (IOException ex) {
-        	System.out.println("[ERRO] Uma excessao de i/o foi lancada");
+            System.out.println("[ERRO] Uma excessao de i/o foi lancada");
             System.exit(01);
         }
 
