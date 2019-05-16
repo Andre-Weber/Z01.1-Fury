@@ -54,8 +54,10 @@ public class Parser {
         String line;
         do {
             line = fileReader.readLine();
-            lineNumber++;
             if (line != null && line.length() > 0 && line.charAt(0) != ';') {
+                if (!line.trim().equals("nop")) {
+                    lineNumber++;
+                }
                 String[] splitLine = line.split(";"); // Removendo comentario de meio de linha
                 currentLine = splitLine[0];
                 currentLine = currentLine.trim();

@@ -55,10 +55,6 @@ public class Assemble {
 
         }
 
-
-
-
-
         int AddressA = 0;
         Parser parser2 = new Parser(inputFile);
         while(parser2.advance()){
@@ -95,7 +91,6 @@ public class Assemble {
                     break;
                 case A_COMMAND:
                     String mSymbol = parser.symbol(parser.command());
-                    System.out.println(mSymbol);
                     String mInstruction;
                     if (mSymbol.matches("[0-9]+")) {
                         mInstruction = Code.toBinary(mSymbol);
@@ -103,7 +98,6 @@ public class Assemble {
                         Integer symbol = table.getAddress(mSymbol);
                         mInstruction = Code.toBinary(symbol.toString());
                     }
-                    System.out.println(mInstruction);
                     instruction = "00" + mInstruction;
                     break;
                 default:
