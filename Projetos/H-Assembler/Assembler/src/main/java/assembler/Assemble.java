@@ -78,7 +78,7 @@ public class Assemble {
     public void generateMachineCode() throws FileNotFoundException, IOException{
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
-
+        Code codes = new Code();
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
@@ -87,16 +87,20 @@ public class Assemble {
         while (parser.advance()){
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
-                    Code.comp(parser.instruction(parser.command()));
+                    String[] command = parser.instruction(parser.command());
+                    if (command.length >1) {
+                        System.out.println(command[1]);
+                    }
+                    instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
                     break;
                 case A_COMMAND:
                     String mSymbol = parser.symbol(parser.command());
                     String mInstruction;
                     if (mSymbol.matches("[0-9]+")) {
-                        mInstruction = Code.toBinary(mSymbol);
+                        mInstruction = codes.toBinary(mSymbol);
                     } else {
                         Integer symbol = table.getAddress(mSymbol);
-                        mInstruction = Code.toBinary(symbol.toString());
+                        mInstruction = codes.toBinary(symbol.toString());
                     }
                     instruction = "00" + mInstruction;
                     break;

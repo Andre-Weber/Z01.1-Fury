@@ -375,7 +375,7 @@ public class Code {
             r1 = '0';
             r0 = '1';
         }
-        if(r.contains("(%A") || (r.contains("%D") && r.contains("%(A)"))){
+        if(r.contains("(%A)") || (r.contains("%D") && r.contains("%(A)"))){
             r2 = '0';
             r1 = '1';
             r0 = '0';

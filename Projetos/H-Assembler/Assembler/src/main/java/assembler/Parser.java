@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
@@ -121,7 +122,9 @@ public class Parser {
      * @return um vetor de string contento os tokens da instrução (as partes do comando).
      */
     public String[] instruction(String command) {
-    	return command.split(" |,");
+        String[] aCommand = command.split(" |,");
+
+        return aCommand;
     }
 
     // fecha o arquivo de leitura
