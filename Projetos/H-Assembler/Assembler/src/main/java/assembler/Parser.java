@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
@@ -54,12 +55,14 @@ public class Parser {
         String line;
         do {
             line = fileReader.readLine();
-            System.out.println(line);
-            lineNumber++;
             if (line != null && line.length() > 0 && line.charAt(0) != ';') {
                 String[] splitLine = line.split(";"); // Removendo comentario de meio de linha
-                currentLine = splitLine[0];
-                currentLine = currentLine.trim();
+
+                if (!line.trim().equals("nop")) {
+                    lineNumber++;
+                    currentLine = splitLine[0];
+                    currentLine = currentLine.trim();
+                }
                 return true;
             }
         } while (line != null);
@@ -120,7 +123,16 @@ public class Parser {
      * @return um vetor de string contento os tokens da instrução (as partes do comando).
      */
     public String[] instruction(String command) {
-    	return command.split(" |,");
+        String[] aCommand = command.split(" |,");
+        String newWord = "";
+        for (String string : aCommand) {
+            if (!(string.equals(" ") || string.equals(""))) {
+                newWord += string;
+                newWord += ",";
+            }
+        }
+        String[] mReturn = newWord.split(",");
+        return mReturn;
     }
 
     // fecha o arquivo de leitura

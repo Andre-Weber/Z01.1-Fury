@@ -9,6 +9,8 @@
 
 package assembler;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.io.*;
 import java.util.*;
 
@@ -22,11 +24,7 @@ public class Assemble {
     boolean debug;                         // flag que especifica se mensagens de debug são impressas
     private SymbolTable table;             // tabela de símbolos (variáveis e marcadores)
 
-    /**
-     * Retorna o código binário do mnemônico para realizar uma operação de cálculo.
-     * @param  mnemnonic vetor de mnemônicos "instrução" a ser analisada.
-     * @return Opcode (String de 7 bits) com código em linguagem de máquina para a instrução.
-     */
+
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
         inputFile  = inFile;
@@ -45,13 +43,34 @@ public class Assemble {
      * Dependencia : Parser, SymbolTable
      */
     public SymbolTable fillSymbolTable() throws FileNotFoundException, IOException {
-        Parser parser = new Parser(inputFile);
-        while (parser.advance()){
-
+        int addressL = 0;
+        Parser parserL = new Parser(inputFile);
+        while (parserL.advance()){
+            if (parserL.commandType(parserL.command()) == Parser.CommandType.L_COMMAND){
+                String label = parserL.label(parserL.command());
+                if (!table.contains(label)){
+                    table.addEntry(label, addressL);
+                }
+            }
+            else{
+                addressL += 1;
+            }
         }
-
-        return table;
+        int addressA = 16;
+        Parser parserA = new Parser(inputFile);
+        while (parserA.advance()){
+            if (parserA.commandType(parserA.command()) == Parser.CommandType.A_COMMAND) {
+                String symbol = parserA.symbol(parserA.command());
+                if (!symbol.matches("[0-9]+")) { //Checks it is not number
+                    if (!table.contains(symbol)) {
+                        table.addEntry(symbol, addressA);
+                        addressA += 1;
+                    }
+                }
+            }
+        } return table;
     }
+
 
     /**
      * Segundo passo para a geração do código de máquina
@@ -63,7 +82,7 @@ public class Assemble {
     public void generateMachineCode() throws FileNotFoundException, IOException{
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
-
+        Code codes = new Code();
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
@@ -72,12 +91,33 @@ public class Assemble {
         while (parser.advance()){
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
+                    String[] command = parser.instruction(parser.command());
+//                    for (String string: command) {
+//                        System.out.println(string);
+//                    }
+//                    System.out.println();
+//                    System.out.println();
+//                    System.out.println();
+                    instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
+
                     break;
                 case A_COMMAND:
+                    String mSymbol = parser.symbol(parser.command());
+                    String mInstruction;
+                    if (mSymbol.matches("[0-9]+")) {
+                        mInstruction = codes.toBinary(mSymbol);
+                    } else {
+                        Integer symbol = table.getAddress(mSymbol);
+                        System.out.println(symbol);
+                        mInstruction = codes.toBinary(symbol.toString());
+                    }
+                    instruction = "00" + mInstruction;
                     break;
                 default:
+                    instruction = "\n";
                     continue;
             }
+
             // Escreve no arquivo .hack a instrução
             if(outHACK!=null) {
                 outHACK.println(instruction);

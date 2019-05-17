@@ -74,10 +74,12 @@ public class ParserTest {
     @Test
     public void testParser_symbol() {
         try {
-	            assertTrue("leaw $0,%A",parser.symbol("leaw $0,%A").equals("0"));
-	            assertTrue("leaw $i,%A",parser.symbol("leaw $i,%A").equals("i"));
-	            assertTrue("leaw $LOOP,%A",parser.symbol("leaw $LOOP,%A").equals("LOOP"));
-	            assertTrue("leaw $12345,%A",parser.symbol("leaw $12345,%A").equals("12345"));
+
+
+            assertTrue("leaw $0,%A",parser.symbol("leaw $0,%A").equals("0"));
+            assertTrue("leaw $i,%A",parser.symbol("leaw $i,%A").equals("i"));
+            assertTrue("leaw $LOOP,%A",parser.symbol("leaw $LOOP,%A").equals("LOOP"));
+            assertTrue("leaw $12345,%A",parser.symbol("leaw $12345,%A").equals("12345"));
 	        
         } catch(Exception e) {
             e.printStackTrace();

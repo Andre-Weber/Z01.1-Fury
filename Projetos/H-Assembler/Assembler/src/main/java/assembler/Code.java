@@ -21,19 +21,26 @@ public class Code {
         char d3= '0', d2= '0', d1= '0', d0 = '0';
         StringBuilder sb = new StringBuilder();
         if(mnemnonic.length == 2){
-            switch (mnemnonic[1]){
-                case "%A":
-                    d3 = '1';
-                    break;
-                case "%D":
-                    d1 = '1';
-                    break;
-                case "%S":
-                    d2 = '1';
-                    break;
-                case "(%A)":
-                    d0 = '1';
-                    break;
+            if(mnemnonic[0].equals("jmp") || mnemnonic[0].equals("je") || mnemnonic[0].equals("jne") || mnemnonic[0].equals("jg") || mnemnonic[0].equals("jge") || mnemnonic[0].equals("jl") || mnemnonic[0].equals("jle")){
+                d3 = '0';
+                d2 = '0';
+                d1 = '0';
+                d0 = '0';
+            } else {
+                switch (mnemnonic[1]) {
+                    case "%A":
+                        d3 = '1';
+                        break;
+                    case "%D":
+                        d1 = '1';
+                        break;
+                    case "%S":
+                        d2 = '1';
+                        break;
+                    case "(%A)":
+                        d0 = '1';
+                        break;
+                }
             }
 
         }
@@ -83,7 +90,7 @@ public class Code {
                     break;
 
             }
-            if(mnemnonic[0] == "addw" || mnemnonic[0] == "subw" || mnemnonic[0] == "rsubw"){
+            if(mnemnonic[0].equals("addw") || mnemnonic[0].equals("subw") || mnemnonic[0].equals("rsubw") || mnemnonic[0].equals("andw")){
                 switch (mnemnonic[3]){
                     case "%A":
                         d3 = '1';
@@ -131,8 +138,11 @@ public class Code {
         char r2 = '0', r1 = '0', r0 = '0', c5 = '0', c4 = '0', c3= '0', c2= '0', c1= '0', c0= '0';
         String r = "000";
         StringBuilder sb = new StringBuilder();
+        if (mnemnonic[0].equals("jmp")) {
+            return "000001100";
+        }
         if(mnemnonic.length == 2){
-            if(mnemnonic[0] == "jmp" || mnemnonic[0] == "je" || mnemnonic[0] == "jne" || mnemnonic[0] == "jg" || mnemnonic[0] == "jge" || mnemnonic[0] == "jl" || mnemnonic[0] == "jle"){
+            if(mnemnonic[0].equals("jmp") || mnemnonic[0].equals("je") || mnemnonic[0].equals("jne") || mnemnonic[0].equals("jg") || mnemnonic[0].equals("jge") || mnemnonic[0].equals("jl") || mnemnonic[0].equals("jle")){
                 switch (mnemnonic[1]){
                     case "%D": case "%S":
                         c3 = '1';
@@ -144,7 +154,7 @@ public class Code {
                         break;
                 }
             }
-            if(mnemnonic[0] == "incw"){
+            if(mnemnonic[0].equals("incw")){
             switch (mnemnonic[1]){
                 case "%A": case "(%A)":
                     c5 = '1';
@@ -164,7 +174,7 @@ public class Code {
 
 
         }
-            if(mnemnonic[0] == "decw"){
+            if(mnemnonic[0].equals("decw")){
                 switch (mnemnonic[1]){
                     case "%D": case "%S":
                         c3 = '1';
@@ -179,7 +189,7 @@ public class Code {
 
                 }
             }
-            if(mnemnonic[0] == "notw"){
+            if(mnemnonic[0].equals("notw")){
                 switch (mnemnonic[1]){
                     case "%D": case "%S":
                         c3 = '1';
@@ -193,7 +203,7 @@ public class Code {
                         break;
                 }
             }
-            if(mnemnonic[0] == "negw"){
+            if(mnemnonic[0].equals("negw")){
                 switch (mnemnonic[1]){
                     case "%D": case "%S":
                         c3 = '1';
@@ -223,16 +233,40 @@ public class Code {
                     c3 = '1';
                     c2 = '1';
                     break;
+                case "$1":
+                    c5 = '1';
+                    c4 = '1';
+                    c3 = '1';
+                    c2 = '1';
+                    c1 = '1';
+                    c0 = '1';
+                    break;
+                case "$0":
+                    c5 = '1';
+                    c4 = '0';
+                    c3 = '1';
+                    c2 = '0';
+                    c1 = '1';
+                    c0 = '0';
+                    break;
+                case "$-1":
+                    c5 = '1';
+                    c4 = '1';
+                    c3 = '1';
+                    c2 = '0';
+                    c1 = '1';
+                    c0 = '0';
+                    break;
             }
             r = mnemnonic[1];
 
         }
         if(mnemnonic.length == 4){
-            if(mnemnonic[0] == "addw"){
+            if(mnemnonic[0].equals("addw")){
                 c1 = '1';
             }
-            if(mnemnonic[0] == "subw"){
-                if(mnemnonic[1] == "%S"){
+            if(mnemnonic[0].equals("subw")){
+                if(mnemnonic[1].equals("%S")){
                     switch (mnemnonic[2]){
                         case "$1":
                             c3 = '1';
@@ -247,7 +281,7 @@ public class Code {
                     }
 
                 }
-                if(mnemnonic[1] == "%D"){
+                if(mnemnonic[1].equals("%D")){
                     switch (mnemnonic[2]){
                         case "%A": case "(%A)":
                             c4 = '1';
@@ -266,7 +300,7 @@ public class Code {
                             break;
                     }
                 }
-                if(mnemnonic[1] == "(%A)"){
+                if(mnemnonic[1].equals("(%A)")){
                     switch (mnemnonic[2]){
                         case "$1":
                             c5 = '1';
@@ -281,7 +315,7 @@ public class Code {
                             break;
                     }
                 }
-                if(mnemnonic[1] == "%A"){
+                if(mnemnonic[1].equals("%A")){
                     switch (mnemnonic[2]){
                         case "$1":
                             c5 = '1';
@@ -298,8 +332,8 @@ public class Code {
                 }
 
                 }
-            if(mnemnonic[0] == "rsubw"){
-                if(mnemnonic[2] == "%D"){
+            if(mnemnonic[0].equals("rsubw")){
+                if(mnemnonic[2].equals("%D")){
                     switch (mnemnonic[2]){
                         case "%A":
                             c5 = '0';
@@ -319,12 +353,12 @@ public class Code {
                             break;
                     }
                 }
-                if(mnemnonic[2] == "%S"){
+                if(mnemnonic[2].equals("%S")){
                     c4 = '1';
                     c1 = '1';
                     c0 = '1';
                 }
-                if(mnemnonic[2] == "%D"){
+                if(mnemnonic[2].equals("%D")){
                     switch (mnemnonic[2]){
                         case "%A": case "(%A)":
                             c4 = '1';
@@ -339,12 +373,12 @@ public class Code {
                             break;
                     }
                 }
-                if(mnemnonic[2] == "(%A)"){
+                if(mnemnonic[2].equals("(%A)")){
                     c2 = '1';
                     c1 = '1';
                     c0 = '1';
                 }
-                if(mnemnonic[2] == "%A"){
+                if(mnemnonic[2].equals("%A")){
                     c2 = '1';
                     c1 = '1';
                     c0 = '1';
@@ -352,7 +386,7 @@ public class Code {
                 }
 
             }
-            if(mnemnonic[0] == "orw"){
+            if(mnemnonic[0].equals("orw")){
                 c4 = '1';
                 c2 = '1';
                 c0 = '1';
@@ -375,7 +409,7 @@ public class Code {
             r1 = '0';
             r0 = '1';
         }
-        if(r.contains("(%A") || (r.contains("%D") && r.contains("%(A)"))){
+        if(r.contains("(%A)") || (r.contains("%D") && r.contains("%(A)"))){
             r2 = '0';
             r1 = '1';
             r0 = '0';
