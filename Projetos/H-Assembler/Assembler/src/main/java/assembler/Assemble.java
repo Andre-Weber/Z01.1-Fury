@@ -36,6 +36,8 @@ public class Assemble {
 
     private String nopCommand = "100000000000000000";
 
+    private HashMap<String, Macro> hashMap = new HashMap<>();
+
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
         if (debug) {
@@ -99,10 +101,12 @@ public class Assemble {
                 String symbol = parserA.symbol(parserA.command());
                 if (!symbol.matches("[0-9]+")) { //Checks it is not number
                     if (!table.contains(symbol)) {
-                        table.addEntry(symbol, addressA);
-                        addressA += 1;
-                        if (debug) {
-                            System.out.println("Added symbol " + symbol + " to memory address " + addressA + ".");
+                        if (!symbol.contains("par")) {
+                            table.addEntry(symbol, addressA);
+                            addressA += 1;
+                            if (debug) {
+                                System.out.println("Added symbol " + symbol + " to memory address " + addressA + ".");
+                            }
                         }
                     }
                 }
@@ -112,6 +116,41 @@ public class Assemble {
             System.out.println("-");
         }
         return table;
+    }
+
+    public void findMacros() throws FileNotFoundException, IOException {
+        if (debug) {
+            System.out.println("Looking for macros.");
+        }
+        Parser parser = new Parser(inputFile);
+        while (parser.advance()) {
+            String command = parser.command();
+            if (parser.commandType(command) == Parser.CommandType.M_COMMAND) {
+                String macroName = parser.macroName(command);
+                int paramsNumber = parser.params(command);
+                if (debug) {
+                    System.out.println("-");
+                    System.out.println("Found Macro.");
+                    System.out.println("Name: " + macroName);
+                    System.out.println("Number of Params: " + paramsNumber);
+                    System.out.println("Saving Macro.");
+                    System.out.println("-");
+                }
+                LinkedList<String> macroCommands = new LinkedList<>();
+                boolean inMacro = true;
+                while (inMacro) {
+                    parser.advance();
+                    String aCommand = parser.command();
+                    if (parser.commandType(aCommand) == Parser.CommandType.M_COMMAND) {
+                        inMacro = false;
+                    } else {
+                        macroCommands.add(aCommand);
+                    }
+                }
+                Macro macro = new Macro(macroName, paramsNumber, macroCommands, inputFile, hashMap, table, debug);
+                hashMap.put(macroName, macro);
+            }
+        }
     }
 
 
@@ -137,31 +176,62 @@ public class Assemble {
          */
         while (parser.advance()){
             String mCommand = parser.command();
-            switch (parser.commandType(mCommand)){
-                case C_COMMAND:
-                    String[] command = parser.instruction(mCommand);
-                    instruction = "10" + Code.comp(command) + Code.dest(command) + Code.jump(command);
-
-                    break;
-                case A_COMMAND:
-                    String mSymbol = parser.symbol(mCommand);
-                    String mInstruction;
-                    if (mSymbol.matches("[0-9]+")) {
-                        mInstruction = Code.toBinary(mSymbol);
-                        if (debug) {
-                            System.out.println("Loading " + mSymbol + " in Register A");
-                        }
-                    } else {
-                        Integer symbol = table.getAddress(mSymbol);
-                        mInstruction = Code.toBinary(symbol.toString());
-                        if (debug) {
-                            System.out.println("Loading " + mSymbol + " (stored in memory address " + symbol + ") in Register A");
-                        }
+            if (parser.commandType(mCommand) == Parser.CommandType.M_COMMAND) {
+                boolean inMacro = true;
+                while (inMacro) {
+                    parser.advance();
+                    String line = parser.command();
+                    if (parser.commandType(line) == Parser.CommandType.M_COMMAND) {
+                        inMacro = false;
                     }
-                    instruction = "00" + mInstruction;
-                    break;
-                default:
-                    continue;
+                }
+            } else {
+                switch (parser.commandType(mCommand)) {
+                    case C_COMMAND:
+                        String[] command = parser.instruction(mCommand);
+                        if (hashMap.containsKey(command[0])) {
+                            if (debug) {
+                                System.out.println("-");
+                                System.out.println("Found Macro " + command[0]);
+                                System.out.println("Inserting Commands on .Hack file");
+                                System.out.println("-");
+                            }
+                            String[] params = new String[command.length - 1];
+                            System.arraycopy(command, 1, params, 0, command.length - 1);
+                            LinkedList<String> instructions = hashMap.get(command[0]).generateInstructions(params);
+                            if (outHACK != null) {
+                                for (String string : instructions) {
+                                    outHACK.println(string);
+                                    if (parser.fileClosed) {
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            instruction = "10" + Code.comp(command) + Code.dest(command) + Code.jump(command);
+
+                        }
+                        break;
+                    case A_COMMAND:
+                        String mSymbol = parser.symbol(mCommand);
+                        String mInstruction;
+                        if (mSymbol.matches("[0-9]+")) {
+                            mInstruction = Code.toBinary(mSymbol);
+                            if (debug) {
+                                System.out.println("Loading " + mSymbol + " in Register A");
+                            }
+                        } else {
+                            Integer symbol = table.getAddress(mSymbol);
+                            mInstruction = Code.toBinary(symbol.toString());
+                            if (debug) {
+                                System.out.println("Loading " + mSymbol + " (stored in memory address " + symbol + ") in Register A");
+                            }
+                        }
+                        instruction = "00" + mInstruction;
+                        break;
+                    default:
+                        continue;
+                }
             }
             if (!lastCommand.equals("")) {
                 if (parser.commandType(lastCommand) == Parser.CommandType.C_COMMAND) {
@@ -185,10 +255,15 @@ public class Assemble {
             lastCommand = mCommand;
             // Escreve no arquivo .hack a instrução
             if(outHACK!=null) {
-                outHACK.println(instruction);
+                if (instruction!= null) {
+                    outHACK.println(instruction);
+                }
             }
             instruction = null;
             currentLine += 1;
+            if (parser.fileClosed) {
+                break;
+            }
         }
 
     }

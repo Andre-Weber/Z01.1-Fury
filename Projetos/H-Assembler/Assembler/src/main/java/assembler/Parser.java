@@ -26,12 +26,14 @@ public class Parser {
     public String currentLine;			// linha de codigo atual
     public Scanner scanner;
     private BufferedReader fileReader;  // leitor de arquivo
+    public boolean fileClosed;
 
     /** Enumerator para os tipos de comandos do Assembler. */
     public enum CommandType {
         A_COMMAND,      // comandos LEA, que armazenam no registrador A
         C_COMMAND,      // comandos de calculos
-        L_COMMAND       // comandos de Label (símbolos)
+        L_COMMAND,       // comandos de Label (símbolos)
+        M_COMMAND
     }
 
     /**
@@ -42,6 +44,7 @@ public class Parser {
         this.lineNumber = 0;
         this.inputFile = file;
         this.fileReader = new BufferedReader(new FileReader(file));
+        this.fileClosed = false;
     }
 
     /**
@@ -65,6 +68,7 @@ public class Parser {
             }
         } while (line != null);
         fileReader.close();
+        this.fileClosed = true;
         return false;
     }
 
@@ -89,6 +93,8 @@ public class Parser {
     	    return CommandType.A_COMMAND;
         } else if (command.toLowerCase().contains(":")) {
     	    return CommandType.L_COMMAND;
+        } else if (command.toLowerCase().charAt(0) == '%'){
+    	    return CommandType.M_COMMAND;
         } else {
     	    return CommandType.C_COMMAND;
         }
@@ -101,7 +107,11 @@ public class Parser {
      * @return somente o símbolo ou o valor número da instrução.
      */
     public String symbol(String command) {
-    	return command.substring(command.indexOf("$") + 1, command.indexOf(","));
+        if (command.contains("$")) {
+            return command.substring(command.indexOf("$") + 1, command.indexOf(","));
+        } else {
+            return command.substring(command.indexOf(" ") + 1, command.indexOf(","));
+        }
     }
 
     /**
@@ -131,6 +141,16 @@ public class Parser {
         }
         String[] mReturn = newWord.split(",");
         return mReturn;
+    }
+
+    public int params(String command) {
+        String[] aCommand = command.split(" ");
+        String paramsNumber = aCommand[aCommand.length - 1];
+        return Integer.valueOf(paramsNumber);
+    }
+
+    public String macroName(String command) {
+        return command.split(" ")[1];
     }
 
     // fecha o arquivo de leitura
