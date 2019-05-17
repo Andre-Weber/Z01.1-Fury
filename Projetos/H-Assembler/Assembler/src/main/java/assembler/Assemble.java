@@ -43,25 +43,29 @@ public class Assemble {
      * Dependencia : Parser, SymbolTable
      */
     public SymbolTable fillSymbolTable() throws FileNotFoundException, IOException {
-        int AddressL = 0;
-        Parser parser = new Parser(inputFile);
-        while (parser.advance()){
-            if (parser.commandType(parser.command()) == Parser.CommandType.L_COMMAND) {
-                if (!table.contains(parser.label(parser.command()))) {
-                    table.addEntry(parser.label(parser.command()), parser.lineNumber);
-                    AddressL ++;
+        int addressL = 0;
+        Parser parserL = new Parser(inputFile);
+        while (parserL.advance()){
+            if (parserL.commandType(parserL.command()) == Parser.CommandType.L_COMMAND){
+                String label = parserL.label(parserL.command());
+                if (!table.contains(label)){
+                    table.addEntry(label, addressL);
                 }
             }
-
+            else{
+                addressL += 1;
+            }
         }
-
-        int AddressA = 0;
-        Parser parser2 = new Parser(inputFile);
-        while(parser2.advance()){
-            if (parser2.commandType(parser2.command()) == Parser.CommandType.A_COMMAND) {
-                if (!table.contains(parser2.symbol(parser2.command()))) {
-                    table.addEntry(parser2.symbol(parser2.command()), AddressA);
-                    AddressA ++;
+        int addressA = 16;
+        Parser parserA = new Parser(inputFile);
+        while (parserA.advance()){
+            if (parserA.commandType(parserA.command()) == Parser.CommandType.A_COMMAND) {
+                String symbol = parserA.symbol(parserA.command());
+                if (!symbol.matches("[0-9]+")) { //Checks it is not number
+                    if (!table.contains(symbol)) {
+                        table.addEntry(symbol, addressA);
+                        addressA += 1;
+                    }
                 }
             }
         } return table;
@@ -88,8 +92,14 @@ public class Assemble {
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
                     String[] command = parser.instruction(parser.command());
-                    
+//                    for (String string: command) {
+//                        System.out.println(string);
+//                    }
+//                    System.out.println();
+//                    System.out.println();
+//                    System.out.println();
                     instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
+
                     break;
                 case A_COMMAND:
                     String mSymbol = parser.symbol(parser.command());
@@ -98,11 +108,13 @@ public class Assemble {
                         mInstruction = codes.toBinary(mSymbol);
                     } else {
                         Integer symbol = table.getAddress(mSymbol);
+                        System.out.println(symbol);
                         mInstruction = codes.toBinary(symbol.toString());
                     }
                     instruction = "00" + mInstruction;
                     break;
                 default:
+                    instruction = "\n";
                     continue;
             }
 
