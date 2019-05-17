@@ -19,7 +19,7 @@ public class AssembleTest {
     public AssembleTest() {
         try {
             // Cria objeto assembler auxiliar
-            assembler = new Assemble(inFile, outFile, true );
+            assembler = new Assemble(inFile, outFile, false );
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -43,7 +43,7 @@ public class AssembleTest {
     public void generateMachineCode() throws IOException {
        // SymbolTable table = assembler.fillSymbolTable();
         SymbolTable table = assembler.fillSymbolTable();
-
+        assembler.findMacros();
         assembler.generateMachineCode();
         assembler.close();
         BufferedReader fileReader = new BufferedReader(new FileReader(outFile));
@@ -67,5 +67,21 @@ public class AssembleTest {
         assertEquals(fileReader.readLine(),"100101100000100000"); // movw (%A), %S
         assertEquals(fileReader.readLine(),"000000000000000000"); // leaw $0, %A
         assertEquals(fileReader.readLine(),"100010011000001000"); // movw %S, (%A)
+    }
+
+    @Test
+    public void generateMacro() throws IOException {
+        String inFile  = "src/test/resources/macro.nasm";
+        String outFile = "src/test/resources/macro.hack";
+        Assemble mAssembler = new Assemble(inFile, outFile, true);
+        SymbolTable table = mAssembler.fillSymbolTable();
+        mAssembler.findMacros();
+        mAssembler.generateMachineCode();
+        mAssembler.close();
+        BufferedReader fileReader = new BufferedReader(new FileReader(outFile));
+        assertEquals(fileReader.readLine(),"000000000000000101"); // leaw $5, %A
+        assertEquals(fileReader.readLine(),"100001100000010000"); // movw %A, %D
+        assertEquals(fileReader.readLine(),"000000000000001000"); // leaw $8, %A
+        assertEquals(fileReader.readLine(),"100000011000001000"); // movw %D, (%A)
     }
 }
