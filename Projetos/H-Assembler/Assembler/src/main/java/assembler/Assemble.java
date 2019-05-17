@@ -24,9 +24,27 @@ public class Assemble {
     boolean debug;                         // flag que especifica se mensagens de debug são impressas
     private SymbolTable table;             // tabela de símbolos (variáveis e marcadores)
 
+    private String[] jumpTypes = {
+            "jmp",
+            "je",
+            "jne",
+            "jg",
+            "jge",
+            "jl",
+            "jle"
+    };
+
+    private String nopCommand = "100000000000000000";
 
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
+        if (debug) {
+            System.out.println("Debug Mode is on.");
+            System.out.println("Starting Assembler");
+            System.out.println("-");
+            System.out.println("File will be written to address " + outFileHack);
+            System.out.println("-");
+        }
         inputFile  = inFile;
         hackFile   = new File(outFileHack);                      // Cria arquivo de saída .hack
         outHACK    = new PrintWriter(new FileWriter(hackFile));  // Cria saída do print para
@@ -43,13 +61,31 @@ public class Assemble {
      * Dependencia : Parser, SymbolTable
      */
     public SymbolTable fillSymbolTable() throws FileNotFoundException, IOException {
+        if (debug) {
+            System.out.println("Building Symbol Table.");
+        }
         int addressL = 0;
         Parser parserL = new Parser(inputFile);
+        String lastCommand = "";
         while (parserL.advance()){
-            if (parserL.commandType(parserL.command()) == Parser.CommandType.L_COMMAND){
-                String label = parserL.label(parserL.command());
+            String command = parserL.command();
+            if (!lastCommand.equals("")) {
+                if (parserL.commandType(lastCommand) == Parser.CommandType.C_COMMAND) {
+                    if (Arrays.asList(jumpTypes).contains(parserL.instruction(lastCommand)[0])) {
+                        if (!command.trim().equals("nop")) {
+                            addressL += 1;
+                        }
+                    }
+                }
+            }
+            lastCommand = command;
+            if (parserL.commandType(command) == Parser.CommandType.L_COMMAND){
+                String label = parserL.label(command);
                 if (!table.contains(label)){
                     table.addEntry(label, addressL);
+                    if (debug) {
+                        System.out.println("Added label " + label + " to memory address " + addressL + ".");
+                    }
                 }
             }
             else{
@@ -65,10 +101,17 @@ public class Assemble {
                     if (!table.contains(symbol)) {
                         table.addEntry(symbol, addressA);
                         addressA += 1;
+                        if (debug) {
+                            System.out.println("Added symbol " + symbol + " to memory address " + addressA + ".");
+                        }
                     }
                 }
             }
-        } return table;
+        }
+        if (debug) {
+            System.out.println("-");
+        }
+        return table;
     }
 
 
@@ -80,49 +123,72 @@ public class Assemble {
      * Dependencias : Parser, Code
      */
     public void generateMachineCode() throws FileNotFoundException, IOException{
+        if (debug) {
+            System.out.println("Generating Machine Code");
+        }
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
-        Code codes = new Code();
+        String lastCommand = "";
+        int currentLine = 0;
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
          * de instrução válida do nasm
          */
         while (parser.advance()){
-            switch (parser.commandType(parser.command())){
+            String mCommand = parser.command();
+            switch (parser.commandType(mCommand)){
                 case C_COMMAND:
-                    String[] command = parser.instruction(parser.command());
-//                    for (String string: command) {
-//                        System.out.println(string);
-//                    }
-//                    System.out.println();
-//                    System.out.println();
-//                    System.out.println();
-                    instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
+                    String[] command = parser.instruction(mCommand);
+                    instruction = "10" + Code.comp(command) + Code.dest(command) + Code.jump(command);
 
                     break;
                 case A_COMMAND:
-                    String mSymbol = parser.symbol(parser.command());
+                    String mSymbol = parser.symbol(mCommand);
                     String mInstruction;
                     if (mSymbol.matches("[0-9]+")) {
-                        mInstruction = codes.toBinary(mSymbol);
+                        mInstruction = Code.toBinary(mSymbol);
+                        if (debug) {
+                            System.out.println("Loading " + mSymbol + " in Register A");
+                        }
                     } else {
                         Integer symbol = table.getAddress(mSymbol);
-                        System.out.println(symbol);
-                        mInstruction = codes.toBinary(symbol.toString());
+                        mInstruction = Code.toBinary(symbol.toString());
+                        if (debug) {
+                            System.out.println("Loading " + mSymbol + " (stored in memory address " + symbol + ") in Register A");
+                        }
                     }
                     instruction = "00" + mInstruction;
                     break;
                 default:
-                    instruction = "\n";
                     continue;
             }
-
+            if (!lastCommand.equals("")) {
+                if (parser.commandType(lastCommand) == Parser.CommandType.C_COMMAND) {
+                    if (Arrays.asList(jumpTypes).contains(parser.instruction(lastCommand)[0])) {
+                        if (!mCommand.trim().equals("nop")) {
+                            if (debug) {
+                                System.out.println("-");
+                                System.out.println("[WARNING]");
+                                System.out.println("Command " + lastCommand + " on line " + (currentLine - 1));
+                                System.out.println("This would require a NOP command on line " + currentLine);
+                                System.out.println("Nop command was automaticaly added for you!");
+                                System.out.println("-");
+                                }
+                            if (outHACK!=null) {
+                                outHACK.println(nopCommand);
+                            }
+                        }
+                    }
+                }
+            }
+            lastCommand = mCommand;
             // Escreve no arquivo .hack a instrução
             if(outHACK!=null) {
                 outHACK.println(instruction);
             }
             instruction = null;
+            currentLine += 1;
         }
 
     }
@@ -132,6 +198,10 @@ public class Assemble {
      */
     public void close() throws IOException {
         if(outHACK!=null) {
+            if (debug) {
+                System.out.println("Closing File.");
+                System.out.println("-");
+            }
             outHACK.close();
         }
     }
@@ -142,6 +212,11 @@ public class Assemble {
     public void delete() {
         try{
             if(hackFile!=null) {
+                if (debug) {
+                    System.out.println("Error encountered");
+                    System.out.println("Deleting .hack File");
+                    System.out.println("-");
+                }
                 hackFile.delete();
             }
         } catch(Exception e) {

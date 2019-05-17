@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -25,7 +26,6 @@ public class Parser {
     public String currentLine;			// linha de codigo atual
     public Scanner scanner;
     private BufferedReader fileReader;  // leitor de arquivo
-
 
     /** Enumerator para os tipos de comandos do Assembler. */
     public enum CommandType {
@@ -58,11 +58,9 @@ public class Parser {
             if (line != null && line.length() > 0 && line.charAt(0) != ';') {
                 String[] splitLine = line.split(";"); // Removendo comentario de meio de linha
 
-                if (!line.trim().equals("nop")) {
-                    lineNumber++;
-                    currentLine = splitLine[0];
-                    currentLine = currentLine.trim();
-                }
+                lineNumber++;
+                currentLine = splitLine[0];
+                currentLine = currentLine.trim();
                 return true;
             }
         } while (line != null);
