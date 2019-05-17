@@ -27,6 +27,13 @@ public class Assemble {
 
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
+        if (debug) {
+            System.out.println("Debug Mode is on.");
+            System.out.println("Starting Assembler");
+            System.out.println("-");
+            System.out.println("File will be written to address " + outFileHack);
+            System.out.println("-");
+        }
         inputFile  = inFile;
         hackFile   = new File(outFileHack);                      // Cria arquivo de saída .hack
         outHACK    = new PrintWriter(new FileWriter(hackFile));  // Cria saída do print para
@@ -43,6 +50,9 @@ public class Assemble {
      * Dependencia : Parser, SymbolTable
      */
     public SymbolTable fillSymbolTable() throws FileNotFoundException, IOException {
+        if (debug) {
+            System.out.println("Building Symbol Table.");
+        }
         int addressL = 0;
         Parser parserL = new Parser(inputFile);
         while (parserL.advance()){
@@ -50,6 +60,9 @@ public class Assemble {
                 String label = parserL.label(parserL.command());
                 if (!table.contains(label)){
                     table.addEntry(label, addressL);
+                    if (debug) {
+                        System.out.println("Added label " + label + " to memory address " + addressL + ".");
+                    }
                 }
             }
             else{
@@ -65,10 +78,17 @@ public class Assemble {
                     if (!table.contains(symbol)) {
                         table.addEntry(symbol, addressA);
                         addressA += 1;
+                        if (debug) {
+                            System.out.println("Added symbol " + symbol + " to memory address " + addressA + ".");
+                        }
                     }
                 }
             }
-        } return table;
+        }
+        if (debug) {
+            System.out.println("-");
+        }
+        return table;
     }
 
 
@@ -80,9 +100,11 @@ public class Assemble {
      * Dependencias : Parser, Code
      */
     public void generateMachineCode() throws FileNotFoundException, IOException{
+        if (debug) {
+            System.out.println("Generating Machine Code");
+        }
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
-        Code codes = new Code();
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
@@ -92,29 +114,27 @@ public class Assemble {
             switch (parser.commandType(parser.command())){
                 case C_COMMAND:
                     String[] command = parser.instruction(parser.command());
-//                    for (String string: command) {
-//                        System.out.println(string);
-//                    }
-//                    System.out.println();
-//                    System.out.println();
-//                    System.out.println();
-                    instruction = "10" + codes.comp(command) + codes.dest(command) + codes.jump(command);
+                    instruction = "10" + Code.comp(command) + Code.dest(command) + Code.jump(command);
 
                     break;
                 case A_COMMAND:
                     String mSymbol = parser.symbol(parser.command());
                     String mInstruction;
                     if (mSymbol.matches("[0-9]+")) {
-                        mInstruction = codes.toBinary(mSymbol);
+                        mInstruction = Code.toBinary(mSymbol);
+                        if (debug) {
+                            System.out.println("Loading " + mSymbol + " in Register A");
+                        }
                     } else {
                         Integer symbol = table.getAddress(mSymbol);
-                        System.out.println(symbol);
-                        mInstruction = codes.toBinary(symbol.toString());
+                        mInstruction = Code.toBinary(symbol.toString());
+                        if (debug) {
+                            System.out.println("Loading " + mSymbol + " (stored in memory address " + symbol + ") in Register A");
+                        }
                     }
                     instruction = "00" + mInstruction;
                     break;
                 default:
-                    instruction = "\n";
                     continue;
             }
 
@@ -132,6 +152,10 @@ public class Assemble {
      */
     public void close() throws IOException {
         if(outHACK!=null) {
+            if (debug) {
+                System.out.println("Closing File.");
+                System.out.println("-");
+            }
             outHACK.close();
         }
     }
@@ -142,6 +166,11 @@ public class Assemble {
     public void delete() {
         try{
             if(hackFile!=null) {
+                if (debug) {
+                    System.out.println("Error encountered");
+                    System.out.println("Deleting .hack File");
+                    System.out.println("-");
+                }
                 hackFile.delete();
             }
         } catch(Exception e) {
