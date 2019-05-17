@@ -34,6 +34,8 @@ public class Assemble {
             "jle"
     };
 
+    private String nopCommand = "100000000000000000";
+
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
         if (debug) {
@@ -64,8 +66,19 @@ public class Assemble {
         }
         int addressL = 0;
         Parser parserL = new Parser(inputFile);
+        String lastCommand = "";
         while (parserL.advance()){
             String command = parserL.command();
+            if (!lastCommand.equals("")) {
+                if (parserL.commandType(lastCommand) == Parser.CommandType.C_COMMAND) {
+                    if (Arrays.asList(jumpTypes).contains(parserL.instruction(lastCommand)[0])) {
+                        if (!command.trim().equals("nop")) {
+                            addressL += 1;
+                        }
+                    }
+                }
+            }
+            lastCommand = command;
             if (parserL.commandType(command) == Parser.CommandType.L_COMMAND){
                 String label = parserL.label(command);
                 if (!table.contains(label)){
@@ -116,6 +129,7 @@ public class Assemble {
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
         String lastCommand = "";
+        int currentLine = 0;
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
@@ -154,14 +168,16 @@ public class Assemble {
                     if (Arrays.asList(jumpTypes).contains(parser.instruction(lastCommand)[0])) {
                         if (!mCommand.trim().equals("nop")) {
                             if (debug) {
-                                System.out.println("[ERROR]");
-                                System.out.println("Command " + lastCommand + " on line " + (parser.lineNumber - 1));
-                                System.out.println("This would require a NOP command on line " + parser.lineNumber);
-                                System.out.println("Shutting down Assembler and deleting .hack file");
                                 System.out.println("-");
-                                delete();
+                                System.out.println("[WARNING]");
+                                System.out.println("Command " + lastCommand + " on line " + (currentLine - 1));
+                                System.out.println("This would require a NOP command on line " + currentLine);
+                                System.out.println("Nop command was automaticaly added for you!");
+                                System.out.println("-");
                                 }
-                            throw new java.lang.Error("Missing Nop command");
+                            if (outHACK!=null) {
+                                outHACK.println(nopCommand);
+                            }
                         }
                     }
                 }
@@ -172,6 +188,7 @@ public class Assemble {
                 outHACK.println(instruction);
             }
             instruction = null;
+            currentLine += 1;
         }
 
     }
