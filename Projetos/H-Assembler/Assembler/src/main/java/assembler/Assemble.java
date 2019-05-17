@@ -24,6 +24,15 @@ public class Assemble {
     boolean debug;                         // flag que especifica se mensagens de debug são impressas
     private SymbolTable table;             // tabela de símbolos (variáveis e marcadores)
 
+    private String[] jumpTypes = {
+            "jmp",
+            "je",
+            "jne",
+            "jg",
+            "jge",
+            "jl",
+            "jle"
+    };
 
     public Assemble(String inFile, String outFileHack, boolean debug) throws IOException {
         this.debug = debug;
@@ -56,8 +65,9 @@ public class Assemble {
         int addressL = 0;
         Parser parserL = new Parser(inputFile);
         while (parserL.advance()){
-            if (parserL.commandType(parserL.command()) == Parser.CommandType.L_COMMAND){
-                String label = parserL.label(parserL.command());
+            String command = parserL.command();
+            if (parserL.commandType(command) == Parser.CommandType.L_COMMAND){
+                String label = parserL.label(command);
                 if (!table.contains(label)){
                     table.addEntry(label, addressL);
                     if (debug) {
@@ -105,20 +115,22 @@ public class Assemble {
         }
         Parser parser = new Parser(inputFile);  // abre o arquivo e aponta para o começo
         String instruction  = null;
+        String lastCommand = "";
         /**
          * Aqui devemos varrer o código nasm linha a linha
          * e gerar a string 'instruction' para cada linha
          * de instrução válida do nasm
          */
         while (parser.advance()){
-            switch (parser.commandType(parser.command())){
+            String mCommand = parser.command();
+            switch (parser.commandType(mCommand)){
                 case C_COMMAND:
-                    String[] command = parser.instruction(parser.command());
+                    String[] command = parser.instruction(mCommand);
                     instruction = "10" + Code.comp(command) + Code.dest(command) + Code.jump(command);
 
                     break;
                 case A_COMMAND:
-                    String mSymbol = parser.symbol(parser.command());
+                    String mSymbol = parser.symbol(mCommand);
                     String mInstruction;
                     if (mSymbol.matches("[0-9]+")) {
                         mInstruction = Code.toBinary(mSymbol);
@@ -137,7 +149,24 @@ public class Assemble {
                 default:
                     continue;
             }
-
+            if (!lastCommand.equals("")) {
+                if (parser.commandType(lastCommand) == Parser.CommandType.C_COMMAND) {
+                    if (Arrays.asList(jumpTypes).contains(parser.instruction(lastCommand)[0])) {
+                        if (!mCommand.trim().equals("nop")) {
+                            if (debug) {
+                                System.out.println("[ERROR]");
+                                System.out.println("Command " + lastCommand + " on line " + (parser.lineNumber - 1));
+                                System.out.println("This would require a NOP command on line " + parser.lineNumber);
+                                System.out.println("Shutting down Assembler and deleting .hack file");
+                                System.out.println("-");
+                                delete();
+                                }
+                            throw new java.lang.Error("Missing Nop command");
+                        }
+                    }
+                }
+            }
+            lastCommand = mCommand;
             // Escreve no arquivo .hack a instrução
             if(outHACK!=null) {
                 outHACK.println(instruction);
