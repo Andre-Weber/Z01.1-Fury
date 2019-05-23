@@ -93,7 +93,7 @@ public class Parser {
     	    return CommandType.A_COMMAND;
         } else if (command.toLowerCase().contains(":")) {
     	    return CommandType.L_COMMAND;
-        } else if (command.toLowerCase().charAt(0) == '%'){
+        } else if (command.toLowerCase().contains("%macro") || command.toLowerCase().contains("%endmacro")){
     	    return CommandType.M_COMMAND;
         } else {
     	    return CommandType.C_COMMAND;
@@ -109,8 +109,10 @@ public class Parser {
     public String symbol(String command) {
         if (command.contains("$")) {
             return command.substring(command.indexOf("$") + 1, command.indexOf(","));
-        } else {
+        } else if (command.contains("par")) {
             return command.substring(command.indexOf(" ") + 1, command.indexOf(","));
+        } else {
+            return command.substring(command.indexOf("%") + 1, command.indexOf(","));
         }
     }
 
