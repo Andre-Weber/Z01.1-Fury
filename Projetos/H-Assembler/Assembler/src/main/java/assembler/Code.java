@@ -391,6 +391,43 @@ public class Code {
                 c2 = '1';
                 c0 = '1';
             }
+            if(mnemnonic[0].equals("movw")) {
+                switch (mnemnonic[1]){
+                    case "%A": case "(%A)":
+                        c5 = '1';
+                        c4 = '1';
+                        break;
+                    case "%S": case "%D":
+                        c3 = '1';
+                        c2 = '1';
+                        break;
+                    case "$1":
+                        c5 = '1';
+                        c4 = '1';
+                        c3 = '1';
+                        c2 = '1';
+                        c1 = '1';
+                        c0 = '1';
+                        break;
+                    case "$0":
+                        c5 = '1';
+                        c4 = '0';
+                        c3 = '1';
+                        c2 = '0';
+                        c1 = '1';
+                        c0 = '0';
+                        break;
+                    case "$-1":
+                        c5 = '1';
+                        c4 = '1';
+                        c3 = '1';
+                        c2 = '0';
+                        c1 = '1';
+                        c0 = '0';
+                        break;
+                }
+                r = mnemnonic[1];
+            }
 
             r = mnemnonic[1] + mnemnonic[2];
             }
