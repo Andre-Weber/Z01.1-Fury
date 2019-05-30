@@ -203,7 +203,9 @@ public class Code {
         commands.add("leaw "+label+",%A");
         commands.add("jmp");
         commands.add("nop");
-
+        String[] stringArray = new String[commands.size()];
+        commands.toArray(stringArray);
+        write(stringArray);
     }
 
     /**
