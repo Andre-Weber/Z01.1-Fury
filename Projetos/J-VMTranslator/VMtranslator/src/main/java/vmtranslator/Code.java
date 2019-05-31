@@ -204,11 +204,25 @@ public class Code {
             } else if (segment.equals("pointer")) {
                 if(index==0) {
 
-                    writePushPop(Parser.CommandType.C_PUSH, "this", 0);
+                    commands.add("leaw $THIS, %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %D, (%A)");
+                    commands.add("incw %A");
+                    commands.add("movw %A, %D");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %D, (%A)");
 
                 } else {
 
-                    writePushPop(Parser.CommandType.C_PUSH, "that", 0);
+                    commands.add("leaw $THAT, %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %D, (%A)");
+                    commands.add("incw %A");
+                    commands.add("movw %A, %D");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %D, (%A)");
 
                 }
             }
