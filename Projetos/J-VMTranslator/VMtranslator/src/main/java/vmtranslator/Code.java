@@ -159,6 +159,7 @@ public class Code {
 
 
         } else if (command.equals("lt")) {
+            commands.add(String.format("; %d - LT", lineCode++));
             commands.add("leaw $SP, %A");
             commands.add("movw (%A), %A");
             commands.add("decw %A");
