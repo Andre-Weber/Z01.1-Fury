@@ -16,8 +16,8 @@
 ###  - push/pop
 ###  - parser
 ###--------------------
-#SimplePushConst 1 300
-#SimplePushLocal 1 300
+SimplePushConst 1 300
+SimplePushLocal 1 300
 #SimplePushTemp 1 300
 #SimplePushThat 1 300
 #SimplePushThis 1 300
