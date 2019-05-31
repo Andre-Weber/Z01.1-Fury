@@ -155,16 +155,60 @@ public class Code {
 
             } else if (segment.equals("this")) {
 
+                commands.add("leaw $THIS, %A");
+                commands.add("movw (%A), %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+                commands.add("incw %A");
+                commands.add("movw %A, %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+
             } else if (segment.equals("that")) {
+
+                commands.add("leaw $THAT, %A");
+                commands.add("movw (%A), %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+                commands.add("incw %A");
+                commands.add("movw %A, %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
 
             } else if (segment.equals("static")) {
 
+                int address = index + 16;
+
+                commands.add("leaw $" + address+ ", %A");
+                commands.add("movw (%A), %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+                commands.add("incw %A");
+                commands.add("movw %A, %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+
             } else if (segment.equals("temp")) {
+
+                int address = index + 5;
+
+                commands.add("leaw $" + address+ ", %A");
+                commands.add("movw (%A), %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
+                commands.add("incw %A");
+                commands.add("movw %A, %D");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %D, (%A)");
 
             } else if (segment.equals("pointer")) {
                 if(index==0) {
 
+                    writePushPop(Parser.CommandType.C_PUSH, "this", 0);
+
                 } else {
+
+                    writePushPop(Parser.CommandType.C_PUSH, "that", 0);
 
                 }
             }
