@@ -99,20 +99,132 @@ public class Code {
                 Error.error("Não faz sentido POP com constant");
             } else if (segment.equals("local")) {
 
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A");
+                commands.add("leaw $1, %A");
+                commands.add("movw (%A), %S");
+                commands.add("leaw $" + index + ",%A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
+
             } else if (segment.equals("argument")) {
+
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A)");
+                commands.add("leaw $2, %A");
+                commands.add("movw (%A), %S");
+                commands.add("leaw $" + index + ", %A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
 
             } else if (segment.equals("this")) {
 
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A)");
+                commands.add("leaw $3, %A");
+                commands.add("movw (%A), %S");
+                commands.add("leaw $" + index + ", %A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
+
             } else if (segment.equals("that")) {
+
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A)");
+                commands.add("leaw $4, %A");
+                commands.add("movw (%A), %S");
+                commands.add("leaw $" + index + ", %A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
 
             } else if (segment.equals("static")) {
 
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A)");
+                commands.add("leaw $16, %A");
+                commands.add("movw %A, %S");
+                commands.add("leaw $" + index + ", %A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
+
             } else if (segment.equals("temp")) {
+
+                commands.add("leaw $SP, %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %D, %A");
+                commands.add("decw %A");
+                commands.add("movw (%A), %D");
+                commands.add("movw %A, %S");
+                commands.add("leaw $SP, %A");
+                commands.add("movw %S, (%A)");
+                commands.add("leaw $5, %A");
+                commands.add("movw %A, %S");
+                commands.add("leaw $" + index + ", %A");
+                commands.add("addw %S, %A, %A");
+                commands.add("movw %D, (%A)");
 
             } else if (segment.equals("pointer")) {
                 if(index==0) {
 
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("movw %D, %A");
+                    commands.add("decw %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("movw %A, %S");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %S, (%A)");
+                    commands.add("leaw $3, %A");
+                    commands.add("movw (%A), %S");
+                    commands.add("leaw $" + index + ", %A");
+                    commands.add("addw %S, %A, %A");
+                    commands.add("movw %D, (%A)");
+
                 } else {
+
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("movw %D, %A");
+                    commands.add("decw %A");
+                    commands.add("movw (%A), %D");
+                    commands.add("movw %A, %S");
+                    commands.add("leaw $SP, %A");
+                    commands.add("movw %S, (%A)");
+                    commands.add("leaw $4, %A");
+                    commands.add("movw (%A), %S");
+                    commands.add("leaw $" + index + ", %A");
+                    commands.add("addw %S, %A, %A");
+                    commands.add("movw %D, (%A)");
 
                 }
             }
