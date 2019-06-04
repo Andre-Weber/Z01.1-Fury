@@ -28,20 +28,20 @@
 #SimplePopThat 1 300
 #SimplePopThis 1 300
 #
-#SimpleAdd 1 300
-#SimpleAnd 1 300
-#SimpleNeg 1 300
-#SimpleOr 1 300
-#SimpleSub 1 300
+SimpleAdd 1 300
+SimpleAnd 1 300
+SimpleNeg 1 300
+SimpleOr 1 300
+SimpleSub 1 300
 #
 #SimplePushAdd 1 300
 #SimplePushArg 1 300
 #
-#SimpleEq 3 300
-#SimpleGoto 1 300
-#SimpleGt 3 300
+SimpleEq 3 300
+SimpleGoto 1 300
+SimpleGt 3 300
 #SimpleIfGoto 1 300
-#SimpleLt 1 300
+SimpleLt 1 300
 #
 #StackTest 1 3000
 #StaticsTest 1 3000
