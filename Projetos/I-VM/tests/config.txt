@@ -2,13 +2,13 @@
 ## Entrega 
 ##--------------------
 
-1a-Add 1 400
-1b-Add 1 400
-1c-Div 1 4000
-2a-Calculadora 1 4000
-2b-Calculadora 1 4000
-2c-Calculadora 1 4000
-2d-Calculadora 1 4000
+#1a-Add 1 400
+#1b-Add 1 400
+#1c-Div 1 4000
+#2a-Calculadora 1 4000
+#2b-Calculadora 1 4000
+#2c-Calculadora 1 4000
+#2d-Calculadora 1 4000
 
 ###--------------------
 ### EXMPLOS: /srcExamples
@@ -38,7 +38,7 @@ SimpleSub 1 300
 #SimplePushArg 1 300
 #
 SimpleEq 3 300
-SimpleGoto 1 300
+#SimpleGoto 1 300
 SimpleGt 3 300
 #SimpleIfGoto 1 300
 SimpleLt 1 300
