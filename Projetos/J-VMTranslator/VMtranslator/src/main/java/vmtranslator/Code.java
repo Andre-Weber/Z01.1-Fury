@@ -568,6 +568,19 @@ public class Code {
 
         List<String> commands = new ArrayList<String>();
         commands.add(String.format("; %d - Goto Condicional", lineCode++));
+        commands.add("leaw $SP, %A");
+        commands.add("movw (%A), %A");
+        commands.add("decw %A");
+        commands.add("movw (%A), %D");
+        commands.add("notw %D");
+        commands.add("leaw $" + label + ", %A");
+        commands.add("je %D");
+        commands.add("nop");
+
+
+        String[] stringArray = new String[ commands.size() ];
+        commands.toArray( stringArray );
+        write(stringArray);
 
      }
 
