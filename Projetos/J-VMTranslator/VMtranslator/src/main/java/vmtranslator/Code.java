@@ -538,8 +538,8 @@ public class Code {
     public void writeLabel(String label) {
 
         List<String> commands = new ArrayList<String>();
-        commands.add( "; Label (marcador)" );
-
+        //commands.add( "; Label (marcador)" );
+        commands.add(label + ":");
     }
 
     /**
